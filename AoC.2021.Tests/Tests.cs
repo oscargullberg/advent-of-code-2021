@@ -42,39 +42,32 @@ public class Tests
         Assert.Equal(3687446, res);
     }
 
-    [Fact]
-    public async Task Day3_Part2_Sample()
+    [Theory]
+    [InlineData("day3_part_2_sample.txt", 230)]
+    [InlineData("day3.txt", 4406844)]
+    public async Task Day3_Part2(string fileName, int expected)
     {
-        var input = await File.ReadAllLinesAsync(GetInputFilePath("day3_part_2_sample.txt"));
+        var input = await File.ReadAllLinesAsync(GetInputFilePath(fileName));
         var res = Day3.Part2(input);
-        Assert.Equal(230, res);
-    }
-
-    [Fact]
-    public async Task Day3_Part2()
-    {
-        var input = await File.ReadAllLinesAsync(GetInputFilePath("day3.txt"));
-        var res = Day3.Part2(input);
-        Assert.Equal(4406844, res);
+        Assert.Equal(expected, res);
     }
 
     [Theory]
     [InlineData("day4_sample.txt", 4512)]
     [InlineData("day4.txt", 2496)]
-    public async Task Day4_Part1(string inputFileName, int expected)
+    public async Task Day4_Part1(string fileName, int expected)
     {
-        var input = await File.ReadAllLinesAsync(GetInputFilePath(inputFileName));
+        var input = await File.ReadAllLinesAsync(GetInputFilePath(fileName));
         var res = Day4.Part1(input);
         Assert.Equal(expected, res);
     }
 
-
     [Theory]
     [InlineData("day4_sample.txt", 1924)]
     [InlineData("day4.txt", 25925)]
-    public async Task Day4_Part2(string inputFileName, int expected)
+    public async Task Day4_Part2(string fileName, int expected)
     {
-        var input = await File.ReadAllLinesAsync(GetInputFilePath(inputFileName));
+        var input = await File.ReadAllLinesAsync(GetInputFilePath(fileName));
         var res = Day4.Part2(input);
         Assert.Equal(expected, res);
     }

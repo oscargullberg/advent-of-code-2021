@@ -1,5 +1,57 @@
 public class Day4
 {
+    public static int Part1(IEnumerable<string> lines)
+    {
+        List<int> drawNumbers = GetDrawNumbers(lines);
+        var boards = CreateBoards(lines);
+
+        return drawNumbers
+        .Select(n => (num: n, boards: boards.Where(b => b.HasNumber(n))))
+        .Aggregate(null as int?, (acc, curr) =>
+        {
+            if (acc.HasValue)
+            {
+                return acc;
+            }
+
+            var (num, boards) = curr;
+            return boards.Select(b =>
+            {
+                b.Check(num);
+                return b;
+            })
+           .Where(b => b.IsBingo())
+           .Select(b => (b.UncheckedSum() * num) as int?)
+           .FirstOrDefault();
+        }) ?? -1;
+    }
+
+    public static int Part2(IEnumerable<string> lines)
+    {
+        List<int> drawNumbers = GetDrawNumbers(lines);
+        var boards = CreateBoards(lines);
+
+        var (board, num) = drawNumbers
+        .Select(n => (num: n, boards: boards.Where(b => b.HasNumber(n)).ToList()))
+        .Aggregate(new List<(Board board, int num)>(), (acc, curr) =>
+        {
+            var (num, boards) = curr;
+            return acc.Concat(
+                boards.Where(b => !acc.Select(a => a.board.Id).Contains(b.Id))
+                .Select(b =>
+                 {
+                     b.Check(num);
+                     return b;
+                 })
+                 .Where(b => b.IsBingo())
+                 .Select(b => (board: b, num: num))
+           ).ToList();
+        }, res => res.Last());
+
+        return num * board.UncheckedSum();
+    }
+
+    private static List<int> GetDrawNumbers(IEnumerable<string> lines) => lines.ElementAt(0).Split(',').Select(int.Parse).ToList();
 
     private static List<Board> CreateBoards(IEnumerable<string> lines) =>
     lines.Skip(1).Where(c => c != string.Empty)
@@ -13,51 +65,6 @@ public class Day4
     })
     .Select(b => new Board(b))
     .ToList();
-
-
-    public static int Part1(IEnumerable<string> lines)
-    {
-        List<int> drawNumbers = GetDrawNumbers(lines);
-        var boards = CreateBoards(lines);
-
-        foreach (var number in drawNumbers)
-        {
-            foreach (var board in boards.Where(b => b.HasNumber(number)))
-            {
-                board.Check(number);
-                if (board.IsBingo())
-                {
-                    return board.UncheckedSum() * number;
-                }
-            }
-        }
-
-        return -1;
-    }
-
-    public static int Part2(IEnumerable<string> lines)
-    {
-        List<int> drawNumbers = GetDrawNumbers(lines);
-        var boards = CreateBoards(lines);
-
-        var bingoBoards = new List<(int bingoNumber, Board board)>();
-        foreach (var number in drawNumbers)
-        {
-            foreach (var board in boards.Where(b => b.HasNumber(number) && !bingoBoards.Any(bb => bb.board.Id == b.Id)))
-            {
-                board.Check(number);
-                if (board.IsBingo())
-                {
-                    bingoBoards.Add((number, board));
-                }
-            }
-        }
-
-        var lastToBingo = bingoBoards.Last();
-        return lastToBingo.bingoNumber * lastToBingo.board.UncheckedSum();
-    }
-
-    private static List<int> GetDrawNumbers(IEnumerable<string> lines) => lines.ElementAt(0).Split(',').Select(int.Parse).ToList();
 
     class Board
     {
