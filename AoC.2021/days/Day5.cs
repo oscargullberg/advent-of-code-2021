@@ -28,13 +28,13 @@ public class Day5
 
     private static (int x0, int x1, int y0, int y1) ParseLineSegments(string line)
     =>
-         line.Replace(" ", "")
-        .Split("->")
-        .SelectMany(coordString => coordString.Split(","))
-        .Select(int.Parse)
-        .Chunk(4)
-        .Select(coords => (x0: coords[0], x1: coords[2], y0: coords[1], y1: coords[3]))
-        .First();
+    line.Replace(" ", "")
+    .Split("->")
+    .SelectMany(coordString => coordString.Split(","))
+    .Select(int.Parse)
+    .Chunk(4)
+    .Select(coords => (x0: coords[0], x1: coords[2], y0: coords[1], y1: coords[3]))
+    .First();
 
     private static IEnumerable<(int x, int y)> GetLines((int x0, int x1, int y0, int y1) pair)
     {
