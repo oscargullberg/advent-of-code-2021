@@ -40,14 +40,14 @@ public class Day6
             var count = initial[timer];
             if (timer > 0)
             {
-                timerCounts[timer] = timerCounts[timer] - count;
-                timerCounts[timer - 1] = timerCounts[timer - 1] + count;
+                timerCounts[timer] -= count;
+                timerCounts[timer - 1] += count;
             }
             else if (timer == 0)
             {
-                timerCounts[0] = timerCounts[0] - count;
-                timerCounts[6] = timerCounts[6] + count;
-                timerCounts[8] = timerCounts[8] + count;
+                timerCounts[0] -= count;
+                timerCounts[6] += count;
+                timerCounts[8] += count;
             }
         }
         return timerCounts;
