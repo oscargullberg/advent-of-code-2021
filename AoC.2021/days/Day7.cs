@@ -6,7 +6,7 @@ public class Day7
         var sorted = horizontalPositions.OrderBy(x => x).ToList();
         var mid = sorted.ElementAt(sorted.Count / 2); // :))
 
-        return sorted.Aggregate(0, (acc, x) => acc + Math.Abs(mid - x));
+        return sorted.Sum(n => Math.Abs(mid - n));
     }
 
     public static int Part2(string line)
@@ -14,14 +14,12 @@ public class Day7
         var positions = line.Split(",").Select(x => int.Parse(x))
         .OrderBy(x => x)
         .ToList();
-        var matchPositions = Enumerable.Range(positions.First(), positions.Last() + 1)
-        .ToList();
+        var matchPositions = Enumerable.Range(positions.First(), positions.Count + 1);
         var crabPositions = positions
         .GroupBy(pos => pos)
-        .Select(grp => (pos: grp.Key, count: grp.Count()))
-        .ToList();
+        .Select(grp => (pos: grp.Key, count: grp.Count()));
 
-        return matchPositions.Aggregate(new Dictionary<int, int>(), (acc, matchPos) =>
+        return matchPositions.Aggregate(new List<int>(), (acc, matchPos) =>
        {
            var sum = crabPositions.Aggregate(0, (acc, crabPosition) =>
            {
@@ -30,9 +28,9 @@ public class Day7
                var seriesSum = distance * (distance + 1) / 2;
                return acc + (seriesSum * count);
            });
-           acc.Add(matchPos, sum);
+           acc.Add(sum);
            return acc;
        })
-        .MinBy(x => x.Value).Value;
+       .Min();
     }
 }
