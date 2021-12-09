@@ -152,5 +152,25 @@ public class Tests
         Assert.Equal(expected, res);
     }
 
+    [Theory]
+    [InlineData("day9_sample.txt", 15)]
+    [InlineData("day9.txt", 522)]
+    public async Task Day9_Part1(string filename, int expected)
+    {
+        var input = await File.ReadAllLinesAsync(GetInputFilePath(filename));
+        var res = Day9.Part1(input);
+        Assert.Equal(expected, res);
+    }
+
+    [Theory]
+    [InlineData("day9_sample.txt", 1134)]
+    [InlineData("day9.txt", 916688)]
+    public async Task Day9_Part2(string filename, int expected)
+    {
+        var input = await File.ReadAllLinesAsync(GetInputFilePath(filename));
+        var res = Day9.Part2(input);
+        Assert.Equal(expected, res);
+    }
+
     private static string GetInputFilePath(string name) => Path.Combine(Directory.GetCurrentDirectory().Split($"bin{Path.DirectorySeparatorChar}Debug{Path.DirectorySeparatorChar}")[0], "inputs", name);
 }
