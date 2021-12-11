@@ -44,7 +44,7 @@ public class Day4
                      return b;
                  })
                  .Where(b => b.IsBingo())
-                 .Select(b => (board: b, num: num))
+                 .Select(b => (board: b, num))
            ).ToList();
         }, res => res.Last());
 
@@ -69,8 +69,8 @@ public class Day4
     class Board
     {
         private const int ROW_COLUMN_SIZE = 5;
-        private int[] _board;
-        private int?[] _checked = new int?[25];
+        private readonly int[] _board;
+        private readonly int?[] _checked = new int?[25];
 
         public Board(int[] board)
         {
@@ -82,11 +82,11 @@ public class Day4
         public bool HasCheckedPosition(int position) => _checked[position] != null;
         public bool HasCheckedNumber(int number) => _checked.Contains(number);
         public void Check(int number) => _checked[Array.IndexOf(_board, number)] = number;
-        public int UncheckedSum() => _board.Except(_checked.Where(c => c.HasValue).Select(c => c.Value)).Sum();
+        public int UncheckedSum() => _board.Except(_checked.Where(c => c.HasValue).Select(c => c!.Value)).Sum();
 
         public bool IsBingo()
         {
-            if (_checked.Count() < ROW_COLUMN_SIZE)
+            if (_checked.Length < ROW_COLUMN_SIZE)
             {
                 return false;
             }
