@@ -3,14 +3,14 @@ public class Day12
     public static int Part1(IEnumerable<string> lines)
     {
         var graph = CreateGraph(lines);
-        var res = GetAllPaths("start", "end", graph);
+        var res = FindAllPaths("start", "end", graph);
         return res.Count;
     }
 
     public static int Part2(IEnumerable<string> lines)
     {
         var graph = CreateGraph(lines);
-        var res = GetAllPaths("start", "end", graph, part2: true);
+        var res = FindAllPaths("start", "end", graph, part2: true);
         return res.Count;
     }
 
@@ -33,37 +33,33 @@ public class Day12
          return acc;
      });
 
-    private static List<List<string>> GetAllPaths(string from, string to, Dictionary<string, HashSet<string>> graph, List<string>? path = null, bool part2 = false)
+    private static List<List<string>> FindAllPaths(string from, string to, Dictionary<string, HashSet<string>> graph, List<string>? path = null, bool part2 = false)
     {
         path ??= new List<string>();
         path.Add(from);
 
         if (from == to)
         {
-            return new() { new(path) };
+            return new() { path };
         }
 
         var connections = graph[from];
-        var smallPathCounts = path
-        .Where(p => p == p.ToLower())
-        .GroupBy(s => s)
-        .Select(x => new { x.Key, Count = x.Count() })
+        var smallPathCounts = path.Where(x => x == x.ToLower())
+        .GroupBy(x => x)
+        .Select(grp => new { grp.Key, Count = grp.Count() })
         .ToDictionary(x => x.Key, x => x.Count);
 
-        return connections.Where(isValid).SelectMany(v => GetAllPaths(v, to, graph, new(path), part2)).ToList();
+        return connections.Where(isValid)
+        .SelectMany(v => FindAllPaths(v, to, graph, new(path), part2))
+        .ToList();
 
         bool isValid(string v)
         {
             if (!part2)
             {
-                return !(v == v.ToLower() && path.Contains(v));
+                return !smallPathCounts.ContainsKey(v);
             }
-
-            if (v == "start" && smallPathCounts.ContainsKey("start"))
-            {
-                return false;
-            }
-            else if (v == v.ToLower() && smallPathCounts.Any(v => v.Value == 2) && smallPathCounts.ContainsKey(v))
+            else if (smallPathCounts.ContainsKey(v) && (v == "start" || smallPathCounts.Any(v => v.Value == 2)))
             {
                 return false;
             }
