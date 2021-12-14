@@ -1,4 +1,5 @@
 using Xunit;
+using Xunit.Abstractions;
 
 public class Tests
 {
@@ -230,6 +231,33 @@ public class Tests
         var input = await File.ReadAllLinesAsync(GetInputFilePath(filename));
         var res = Day12.Part2(input);
         Assert.Equal(expected, res);
+    }
+
+
+    [Theory]
+    [InlineData("day13_sample.txt", 17)]
+    [InlineData("day13.txt", 661)]
+    public async Task Day13_Part1(string filename, long expected)
+    {
+        var input = await File.ReadAllLinesAsync(GetInputFilePath(filename));
+        var res = Day13.Part1(input);
+        Assert.Equal(expected, res);
+    }
+
+
+
+    [Theory]
+    [InlineData("day13_sample.txt", "")]
+    [InlineData("day13.txt", "")]
+    public async Task Day13_Part2(string filename, string expected)
+    {
+        var input = await File.ReadAllLinesAsync(GetInputFilePath(filename));
+        var res = Day13.Part2(input);
+
+        // :))
+        Console.Write(res);
+        Console.WriteLine("");
+        Console.WriteLine("=======================================");
     }
 
     private static string GetInputFilePath(string name) => Path.Combine(Directory.GetCurrentDirectory().Split($"bin{Path.DirectorySeparatorChar}Debug{Path.DirectorySeparatorChar}")[0], "inputs", name);
