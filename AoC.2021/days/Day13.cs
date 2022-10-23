@@ -19,76 +19,54 @@ public class Day13
             HandleFold(fold, map);
         }
 
-        var maxX = map.Max(m => m.Key.x);
-        var maxY = map.Max(m => m.Key.y);
-
         var output = "";
-        foreach (var y in Enumerable.Range(0, maxY + 1))
+        foreach (var y in Enumerable.Range(0, map.Max(m => m.Key.y) + 1))
         {
             output += Environment.NewLine;
-            foreach (var x in Enumerable.Range(0, maxX + 1))
+            foreach (var x in Enumerable.Range(0, map.Max(m => m.Key.x) + 1))
             {
-
-                if (map.ContainsKey((x, y)))
-                {
-                    output += "#";
-                }
-                else
-                {
-                    output += ".";
-                }
+                output += map.ContainsKey((x, y)) ? "#" : ".";
             }
         }
-        // Todo parse
         return output;
     }
 
-    private static (Dictionary<(int x, int y), string> map, List<string> folds) ParseInput(IEnumerable<string> lines)
+    private static (Dictionary<(int x, int y), string> dotMap, List<(string axis, int coord)> foldInstructions) ParseInput(IEnumerable<string> lines)
     {
-        var dots = lines.Where(l => l.Contains(','))
+        var dotMap = lines.Where(l => l.Contains(','))
        .Select(line => line.Split(","))
-       .Select(splitted => (x: int.Parse(splitted[0]), y: int.Parse(splitted[1])));
-        var map = dots.Aggregate(new Dictionary<(int x, int y), string>(), (acc, dot) =>
-        {
-            acc.Add(dot, "#");
-            return acc;
-        });
-        var folds = lines.Where(l => l.StartsWith("fold"))
-        .Select(l => l.Split(" ")[2])
-        .ToList();
+       .Select(splitted => (x: int.Parse(splitted[0]), y: int.Parse(splitted[1])))
+       .ToDictionary(x => x, _ => "#");
 
-        return (map, folds);
+        var folds = lines.Where(l => l.StartsWith("fold"))
+        .Select(l => l.Split(" ")[2].Split("="))
+        .Select(x => (x[0], int.Parse(x[1])))
+        .ToList();
+        return (dotMap, folds);
     }
 
-    private static void HandleFold(string fold, Dictionary<(int x, int y), string> map)
+    private static void HandleFold((string axis, int coord) fold, Dictionary<(int x, int y), string> map)
     {
+        var (axis, coord) = fold;
         // Fold left
-        if (fold.StartsWith("x"))
+        if (axis == "x")
         {
-            var x = int.Parse(fold.Split("=")[1]);
-            var right = map.Where(k => k.Key.x > x).ToList();
+            var right = map.Where(k => k.Key.x > coord).ToList();
             foreach (var dot in right)
             {
-                var dist = dot.Key.x - x;
-                map.TryAdd((x - dist, dot.Key.y), "#");
-            }
-            foreach (var dot in right)
-            {
+                var dist = dot.Key.x - coord;
+                map.TryAdd((coord - dist, dot.Key.y), "#");
                 map.Remove(dot.Key);
             }
         }
         // Fold up 
         else
         {
-            var y = int.Parse(fold.Split("=")[1]);
-            var below = map.Where(k => k.Key.y > y).ToList();
+            var below = map.Where(k => k.Key.y > coord).ToList();
             foreach (var dot in below)
             {
-                var dist = dot.Key.y - y;
-                map.TryAdd((dot.Key.x, y - dist), "#");
-            }
-            foreach (var dot in below)
-            {
+                var dist = dot.Key.y - coord;
+                map.TryAdd((dot.Key.x, coord - dist), "#");
                 map.Remove(dot.Key);
             }
         }
