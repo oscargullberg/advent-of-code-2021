@@ -1,5 +1,4 @@
 using Xunit;
-using Xunit.Abstractions;
 
 public class Tests
 {
@@ -233,7 +232,6 @@ public class Tests
         Assert.Equal(expected, res);
     }
 
-
     [Theory]
     [InlineData("day13_sample.txt", 17)]
     [InlineData("day13.txt", 661)]
@@ -244,20 +242,42 @@ public class Tests
         Assert.Equal(expected, res);
     }
 
-
-
     [Theory]
-    [InlineData("day13_sample.txt", "")]
-    [InlineData("day13.txt", "")]
+    [InlineData("day13.txt", @"
+###..####.#..#.#....#..#..##..####.###.
+#..#.#....#.#..#....#.#..#..#.#....#..#
+#..#.###..##...#....##...#....###..#..#
+###..#....#.#..#....#.#..#....#....###.
+#....#....#.#..#....#.#..#..#.#....#...
+#....#....#..#.####.#..#..##..#....#...")]
+// PFKLKCFP
     public async Task Day13_Part2(string filename, string expected)
     {
         var input = await File.ReadAllLinesAsync(GetInputFilePath(filename));
+
         var res = Day13.Part2(input);
 
-        // :))
-        Console.Write(res);
-        Console.WriteLine("");
-        Console.WriteLine("=======================================");
+        Assert.Equal(expected.ReplaceLineEndings(), res.ReplaceLineEndings());
+    }
+
+    [Theory]
+    [InlineData("day14_sample.txt", 1588)]
+    [InlineData("day14.txt", 2740)]
+    public async Task Day14_Part1(string filename, int expected)
+    {
+        var input = await File.ReadAllLinesAsync(GetInputFilePath(filename));
+        var res = Day14.Part1(input);
+        Assert.Equal(expected, res);
+    }
+
+    [Theory]
+    [InlineData("day14_sample.txt", 2188189693529)]
+    [InlineData("day14.txt", 2959788056211)]
+    public async Task Day14_Part2(string filename, long expected)
+    {
+        var input = await File.ReadAllLinesAsync(GetInputFilePath(filename));
+        var res = Day14.Part2(input);
+        Assert.Equal(expected, res);
     }
 
     private static string GetInputFilePath(string name) => Path.Combine(Directory.GetCurrentDirectory().Split($"bin{Path.DirectorySeparatorChar}Debug{Path.DirectorySeparatorChar}")[0], "inputs", name);
