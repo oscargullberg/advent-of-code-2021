@@ -250,7 +250,7 @@ public class Tests
 ###..#....#.#..#....#.#..#....#....###.
 #....#....#.#..#....#.#..#..#.#....#...
 #....#....#..#.####.#..#..##..#....#...")]
-// PFKLKCFP
+    // PFKLKCFP
     public async Task Day13_Part2(string filename, string expected)
     {
         var input = await File.ReadAllLinesAsync(GetInputFilePath(filename));
@@ -277,6 +277,26 @@ public class Tests
     {
         var input = await File.ReadAllLinesAsync(GetInputFilePath(filename));
         var res = Day14.Part2(input);
+        Assert.Equal(expected, res);
+    }
+
+    [Theory]
+    [InlineData("day15.txt", 748)]
+    [InlineData("day15_sample.txt", 40)]
+    public async Task Day15_Part1(string filename, long expected)
+    {
+        var input = await File.ReadAllLinesAsync(GetInputFilePath(filename));
+        var res = Day15.Part1(input);
+        Assert.Equal(expected, res);
+    }
+
+    [Theory]
+    [InlineData("day15_sample.txt", 315)]
+    [InlineData("day15.txt", 3045)]
+    public async Task Day15_Part2(string filename, long expected)
+    {
+        var input = await File.ReadAllLinesAsync(GetInputFilePath(filename));
+        var res = Day15.Part2(input);
         Assert.Equal(expected, res);
     }
 
